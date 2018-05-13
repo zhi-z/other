@@ -348,19 +348,22 @@ nvidia-smi
 
 ## 参考文献：
 
-1.https://blog.csdn.net/u012318074/article/details/77074665
 
-2.https://blog.csdn.net/cyn618/article/details/79997960
+1.[Ubuntu 安装 Anaconda3 详细步骤](https://blog.csdn.net/u012318074/article/details/77074665)
 
-3.https://blog.csdn.net/10km/article/details/61191230
+2.[Ubuntu 18.04 安装Tensorflow遇到的问题](https://blog.csdn.net/cyn618/article/details/79997960)
 
-4.https://blog.csdn.net/jasonzhangoo/article/details/54866049
+3.[ubuntu16.04下NVIDIA GTX965M显卡驱动PPA安装](https://blog.csdn.net/10km/article/details/61191230)
 
-5.https://blog.csdn.net/lengconglin/article/details/77506386
+4.[深度学习准备之Ubuntu下装显卡驱动](https://blog.csdn.net/jasonzhangoo/article/details/54866049)
 
-6.https://www.cnblogs.com/luruiyuan/p/6660142.html
+5.[Ubuntu16.04安装CUDA8.0+CUDNN7](https://blog.csdn.net/lengconglin/article/details/77506386)
 
-7.https://blossomnoodles.github.io/cnBlogs/2018/04/30/Ubuntu18.04-Tensorlow-install.html
+6.[Ubuntu 安装 tensorflow-gpu + keras](https://www.cnblogs.com/luruiyuan/p/6660142.html)
+
+7.[在Ubuntu 18.04上安装Tensorflow](https://blossomnoodles.github.io/cnBlogs/2018/04/30/Ubuntu18.04-Tensorlow-install.html)
+8.[ubuntu 下GPU版的 tensorflow / keras的环境搭建](https://blog.csdn.net/Jerr__y/article/details/53695567)
+
 
 
 
