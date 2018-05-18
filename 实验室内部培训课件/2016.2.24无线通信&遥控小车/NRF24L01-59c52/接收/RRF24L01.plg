@@ -1,0 +1,26 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\Administrator\Desktop\NRF24L01\接收\RRF24L01.uvproj
+Project File Date:  01/29/2016
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling 接收.c...
+compiling NRF24L01.c...
+compiling UART.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DELAY500MS?接收
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_NRF24L01_TXPACKET?NRF24L01
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_PUT_INF?UART
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_UART_PUT_HEX?UART
+Program Size: data=113.0 xdata=0 code=1829
+creating hex file from "RRF24L01"...
+"RRF24L01" - 0 Error(s), 4 Warning(s).

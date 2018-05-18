@@ -1,0 +1,12 @@
+"STARTUP.obj",
+".\app.obj",
+".\mmi.obj",
+".\system.obj",
+".\device_key.obj",
+".\device_rtc.obj",
+".\device_timer.obj",
+".\device_usart.obj",
+".\device_sensor.obj",
+".\device_systick.obj" 
+TO "MS3" 
+RAMSIZE(256) 

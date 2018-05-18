@@ -1,0 +1,5 @@
+---- InitializeSystemTick Matches (4 in 3 files) ----
+App.c (sourcefile):    InitializeSystemTick();
+Device.h (sourcefile):extern void InitializeSystemTick(void);
+Device_tick.c (sourcefile):* º¯ÊýÃû	: InitializeSystemTick
+Device_tick.c (sourcefile):void InitializeSystemTick(void)

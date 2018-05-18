@@ -1,0 +1,96 @@
+C51 COMPILER V9.01   DEVICE_RTC                                                            07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE DEVICE_RTC
+OBJECT MODULE PLACED IN .\device_rtc.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\device_rtc.c BROWSE DEBUG OBJECTEXTEND 
+                    -PRINT(.\device_rtc.lst) OBJECT(.\device_rtc.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : device_rtc.c
+  23          *作用     : 虚拟时钟设备
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          
+  29          #include "system.h"
+  30          
+  31          
+  32          Rtc idata RtcEntity;            //定义Rtc实体
+  33          
+  34          void RtcSystemTickService(void) 
+  35          {
+  36   1          static byte idata Counter = 0;
+  37   1          
+  38   1          if(++Counter == 100)        //系统节拍10ms一次，1S需要100次
+  39   1          {
+  40   2              Counter = 0;
+  41   2              RtcEntity.Second++;
+  42   2          }
+  43   1          
+  44   1          if(RtcEntity.Second == 60)
+  45   1          {
+  46   2              RtcEntity.Second = 0;
+  47   2              RtcEntity.Minute++;
+  48   2          }
+  49   1          
+  50   1          if(RtcEntity.Minute == 60)
+  51   1          {
+  52   2              RtcEntity.Minute = 0;
+  53   2              RtcEntity.Hour++;
+  54   2          }
+C51 COMPILER V9.01   DEVICE_RTC                                                            07/26/2015 23:45:15 PAGE 2   
+
+  55   1          
+  56   1          if(RtcEntity.Hour == 24)
+  57   1          {
+  58   2              RtcEntity.Hour = 0;
+  59   2              RtcEntity.Day++;
+  60   2          }   
+  61   1      }
+  62          
+  63          void InitializeRtc(void) 
+  64          {
+  65   1          RtcEntity.Second = 0;
+  66   1          RtcEntity.Minute = 0;
+  67   1          RtcEntity.Hour = 0;
+  68   1          RtcEntity.Day = 0;
+  69   1      }
+  70          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     61    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =      6    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

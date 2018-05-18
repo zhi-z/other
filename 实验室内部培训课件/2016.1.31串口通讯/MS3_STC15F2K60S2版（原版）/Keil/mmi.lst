@@ -1,0 +1,243 @@
+C51 COMPILER V9.01   MMI                                                                   07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MMI
+OBJECT MODULE PLACED IN .\mmi.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\mmi.c BROWSE DEBUG OBJECTEXTEND PRINT(.
+                    -\mmi.lst) OBJECT(.\mmi.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : mmi.c
+  23          *作用     : 界面设计
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          
+  29          #include "system.h"
+  30          #include "app.h"
+  31          
+  32          
+  33          /*******************************************************************************
+  34          以下为状态机方式界面
+  35          *******************************************************************************/
+  36          typedef enum
+  37          {
+  38              WorkState = 1,
+  39              SetupState = 2,
+  40              ServiceState = 3
+  41          }MenuState;
+  42          
+  43          static MenuState idata State = WorkState;
+  44          
+  45          static void WorkStateProcess(Key key)
+  46          {
+  47   1          printf("当前工作界面: key = %c\n", key);
+  48   1          if (key == '2')
+  49   1          {
+  50   2              printf("    切换为设置界面\n");
+  51   2              State = SetupState;
+  52   2          }
+  53   1      }
+  54          
+C51 COMPILER V9.01   MMI                                                                   07/26/2015 23:45:15 PAGE 2   
+
+  55          static void SetupStateProcess(Key key)
+  56          {
+  57   1          printf("当前设置界面: key = %c\n", key);
+  58   1          if (key == '3')
+  59   1          {
+  60   2              printf("    切换为维护界面\n");
+  61   2              State = ServiceState;
+  62   2          }     
+  63   1      }
+  64          
+  65          static void ServiceStateProcess(Key key)
+  66          {
+  67   1          printf("当前维护界面: key = %c\n", key);
+  68   1          if (key == '1')
+  69   1          {
+  70   2              printf("    切换为工作界面\n");
+  71   2              State = WorkState;
+  72   2          }  
+  73   1      }
+  74          
+  75          /*******************************************************************************
+  76          * 函数名        : KeyProcess
+  77          * 描述      : 状态机按键处理函数
+  78          * 输入参数  : key 按键输入
+  79          * 返回参数  : 无
+  80          ********************************************************************************
+  81          *版本     作者            日期            说明
+  82          *V0.1    Wangsw        2013/09/30       初始版本
+  83          *******************************************************************************/
+  84          void KeyProcess(Key key)
+  85          {
+  86   1          switch (State)
+  87   1          {
+  88   2              case WorkState:
+  89   2                  WorkStateProcess(key);
+  90   2                  break;
+  91   2              case SetupState:
+  92   2                  SetupStateProcess(key);
+  93   2                  break;
+  94   2              case ServiceState:
+  95   2                  ServiceStateProcess(key);
+  96   2                  break;
+  97   2          }
+  98   1      }
+  99          
+ 100          /*******************************************************************************
+ 101          以下为函数指针方式界面
+ 102          *******************************************************************************/
+ 103          
+ 104          void (*MmiFunction)(Key key);                           //定义函数指针变量
+ 105          
+ 106          
+ 107          /*******************************************************************************
+ 108          * 函数名        : InitializeIdleForm
+ 109          * 描述      : 界面初始化
+ 110          * 输入参数  : 无
+ 111          * 返回参数  : 无
+ 112          ********************************************************************************
+ 113          *版本     作者            日期            说明
+ 114          *V0.1    Wangsw        2013/09/30       初始版本
+ 115          *******************************************************************************/
+ 116          static void InitializeIdleForm(void)
+C51 COMPILER V9.01   MMI                                                                   07/26/2015 23:45:15 PAGE 3   
+
+ 117          {
+ 118   1          printf("\nmsOS-mcu51-v0.1(MS3.3) Start\n");
+ 119   1          printf("\ndate:2013.8.17\n");
+ 120   1          printf("\nHardware Plat:MCU51Series\n");
+ 121   1          printf("\Author: wangsw\n");
+ 122   1          printf("\n\n");
+ 123   1              
+ 124   1          printf("1:工作界面\n");
+ 125   1          printf("2:设置界面\n");
+ 126   1          printf("3:维护界面\n");
+ 127   1              
+ 128   1          printf("Menu = idle\n");
+ 129   1          printf("Please press 1 , 2 or 3  to select menu\n");
+ 130   1      }
+ 131          
+ 132          //声明函数，因为前面的调用后面的，编译器无法识别，所以需要声明
+ 133          static void WorkPointerProcess(Key key);
+ 134          static void SetupPointerProcess(Key key);
+ 135          static void ServicePointerProcess(Key key);
+ 136          
+ 137          static void WorkPointerProcess(Key key)
+ 138          {
+ 139   1          printf("当前工作界面: key = %c\n", key);
+ 140   1          if (key == '2')
+ 141   1          {
+ 142   2              printf("    切换为设置界面\n");
+ 143   2              MmiFunction = SetupPointerProcess;
+ 144   2          }
+ 145   1      }
+ 146          
+ 147          static void SetupPointerProcess(Key key)
+ 148          {
+ 149   1          printf("当前设置界面: key = %c\n", key);
+ 150   1          if (key == '3')
+ 151   1          {
+ 152   2              printf("    切换为维护界面\n");
+ 153   2              MmiFunction = ServicePointerProcess;
+ 154   2          }     
+ 155   1      }
+ 156          
+ 157          static void ServicePointerProcess(Key key)
+ 158          {
+ 159   1          printf("当前维护界面: key = %c\n", key);
+ 160   1          if (key == '1')
+ 161   1          {
+ 162   2              printf("    切换为工作界面\n");
+ 163   2              MmiFunction = WorkPointerProcess;
+ 164   2          }  
+ 165   1      }
+ 166          
+ 167          /*******************************************************************************
+ 168          * 函数名        : InitializeMmi
+ 169          * 描述      : MMI初始化
+ 170          * 输入参数  : 无
+ 171          * 返回参数  : 无
+ 172          ********************************************************************************
+ 173          *版本     作者            日期            说明
+ 174          *V0.1    Wangsw        2013/09/30       初始版本
+ 175          *******************************************************************************/
+ 176          void InitializeMmi(void)
+ 177          {
+ 178   1      
+C51 COMPILER V9.01   MMI                                                                   07/26/2015 23:45:15 PAGE 4   
+
+ 179   1          InitializeIdleForm();
+ 180   1              P1  = 0 ;
+ 181   1          MmiFunction = WorkPointerProcess;
+ 182   1      }
+ 183          
+ 184          /*******************************************************************************
+ 185          * 函数名        : TimerCallBack
+ 186          * 描述      : 软件定时器测试函数，当调用时，自我循环打印信息
+ 187          * 输入参数  : 无
+ 188          * 返回参数  : 无
+ 189          ********************************************************************************
+ 190          *版本     作者            日期            说明
+ 191          *V0.1    Wangsw        2013/09/30       初始版本
+ 192          *******************************************************************************/
+ 193          void TimerCallBack(void)
+ 194          {
+ 195   1          printf("软件定时器延时执行\n");
+ 196   1          TimerStart(TimerMessageHandle, 1000, TimerCallBack);
+ 197   1      }
+ 198          
+ 199          /*******************************************************************************
+ 200          * 函数名        : UsartProcess
+ 201          * 描述      : 串口消息处理函数
+ 202          * 输入参数  : value 接收数据
+ 203          * 返回参数  : 无
+ 204          ********************************************************************************
+ 205          *版本     作者            日期            说明
+ 206          *V0.1    Wangsw        2013/09/30       初始版本
+ 207          *******************************************************************************/
+ 208          void UsartProcess(byte value)
+ 209          {
+ 210   1          printf("Usart Receive = %x", (ushort)value);
+ 211   1      
+ 212   1          TimerCallBack();
+ 213   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    392    ----
+   CONSTANT SIZE    =    356    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       7
+   IDATA SIZE       =      1    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

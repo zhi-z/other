@@ -1,0 +1,225 @@
+C51 COMPILER V9.01   SYSTEM                                                                07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\system.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\system.c BROWSE DEBUG OBJECTEXTEND PRIN
+                    -T(.\system.lst) OBJECT(.\system.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : system.c
+  23          *作用     : 系统应用文件
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          #include "system.h"
+  29          
+  30          
+  31          
+  32          #define MessageBufferSum 4                              //定义消息队列存储长度
+  33          static ushort idata MessageBuffer[MessageBufferSum];
+  34          
+  35          struct MessageQueue                                     //定义一个队列结构体
+  36          {                                                       
+  37              ushort  * Start;                                    //指针指向队列开始
+  38              ushort  * End;                                      //指针指向队列结束
+  39              ushort  * In;                                       //指针插入一个消息
+  40              ushort  * Out;                                      //指针取出一个消息
+  41              byte      Size;                                     //队列长度
+  42              byte      Entries;                                  //消息长度
+  43          } ;
+  44          static struct MessageQueue idata MessageQueue;
+  45          
+  46          
+  47          
+  48          static bool EaSave;
+  49          static byte CriticalNesting = 0;
+  50          byte code HextoAscii[16] = 
+  51          {
+  52                  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+  53          };
+  54          
+C51 COMPILER V9.01   SYSTEM                                                                07/26/2015 23:45:15 PAGE 2   
+
+  55          void Delay(ushort delayClock)
+  56          {
+  57   1              while(delayClock--);
+  58   1      }
+  59          
+  60          void DelayUs(ushort delayTime)
+  61          {
+  62   1          while(delayTime--);
+  63   1      }
+  64          
+  65          void DelayMs(ushort delayTime)
+  66          {
+  67   1              while(delayTime--)
+  68   1              {
+  69   2                      DelayUs(1000);
+  70   2              }
+  71   1      }
+  72          
+  73          byte HexToAscii(byte hex)
+  74          {
+  75   1              Assert(hex < 16);                   //断言，一旦条件错误，就执行
+  76   1              return HextoAscii[hex];
+  77   1      }
+  78          
+  79          
+  80          /*******************************************************************************
+  81          * 函数名        : EnterCritical
+  82          * 描述      : 进入临界态，防止中断产生
+  83          * 输入参数  : 无
+  84          * 返回参数  : 无
+  85          ********************************************************************************
+  86          *版本     作者            日期            说明
+  87          *V0.1    Wangsw        2013/10/11       初始版本
+  88          *******************************************************************************/
+  89          void EnterCritical(void)
+  90          {
+  91   1          if (CriticalNesting == 0)   //第一级临界态嵌套，保存全局中断寄存器，关闭中断
+  92   1          {
+  93   2              EaSave = EA;
+  94   2              EA = 0;
+  95   2          }
+  96   1          CriticalNesting++;    
+  97   1      }
+  98          
+  99          
+ 100          /*******************************************************************************
+ 101          * 函数名        : ExitCritical
+ 102          * 描述      : 退出临界态，恢复原来状态
+ 103          * 输入参数  : 无
+ 104          * 返回参数  : 无
+ 105          ********************************************************************************
+ 106          *版本     作者            日期            说明
+ 107          *V0.1    Wangsw        2013/10/11       初始版本
+ 108          *******************************************************************************/
+ 109          void ExitCritical(void)
+ 110          {
+ 111   1          if (CriticalNesting > 0)
+ 112   1          {
+ 113   2              CriticalNesting--;
+ 114   2              if (CriticalNesting == 0)//第一级临界态嵌套，恢复原状态
+ 115   2              {
+ 116   3                  EA = EaSave;
+C51 COMPILER V9.01   SYSTEM                                                                07/26/2015 23:45:15 PAGE 3   
+
+ 117   3              }
+ 118   2          }
+ 119   1      }
+ 120          
+ 121          void InitializeMessageQueue(void)
+ 122          {
+ 123   1          MessageQueue.Start = &MessageBuffer[0];
+ 124   1          MessageQueue.End = &MessageBuffer[MessageBufferSum];
+ 125   1          MessageQueue.In = MessageQueue.Start;
+ 126   1          MessageQueue.Out = MessageQueue.Start;
+ 127   1          MessageQueue.Size = MessageBufferSum;
+ 128   1          MessageQueue.Entries = 0;
+ 129   1      }
+ 130          
+ 131          /*******************************************************************************
+ 132          * 函数名        : PostMessage
+ 133          * 描述      : 发送消息
+ 134          * 输入参数  : message: 消息类型, 
+ 135          *             value:消息值，MessageTimer类型为16bit地址，其他类型下都是8bit数据         
+ 136          * 返回参数  : 无
+ 137          *******************************************************************************/
+ 138          void PostMessage(MessageType messageType, ushort value)
+ 139          {
+ 140   1              Assert(MessageQueue.Entries < MessageQueue.Size);//断言，判断消息队列是否满。
+ 141   1          
+ 142   1          EnterCritical();            //保存状态 ，关闭中断防止操作被打断导致消息混乱
+ 143   1      
+ 144   1          if (messageType == TimerMessageType)  //软件定时器类型是特殊消息类型特殊处理
+ 145   1          {
+ 146   2              *MessageQueue.In = value;         //软件定时器传递的是函数指针，直接赋值
+ 147   2          }
+ 148   1          else                                      //常规消息，把消息类型与消息值合并
+ 149   1          {
+ 150   2              UshortToByte1(*MessageQueue.In) = messageType;//把类型赋给消息高地址
+ 151   2              UshortToByte0(*MessageQueue.In) = value & 0xFF;//把值赋给消息低地址
+ 152   2          }
+ 153   1          
+ 154   1              MessageQueue.In++;                                          //消息插入口加一        
+ 155   1          MessageQueue.Entries++;                                     //消息数量加一 
+ 156   1      
+ 157   1          if(MessageQueue.In == MessageQueue.End)                     //插入口循环
+ 158   1          {
+ 159   2              MessageQueue.In = MessageQueue.Start;
+ 160   2          }
+ 161   1          
+ 162   1              ExitCritical();                                         //回复关闭中断前状态
+ 163   1      }
+ 164          
+ 165          /*******************************************************************************
+ 166          * 函数名        : PendMessageQueue
+ 167          * 描述      : 等待消息
+ 168          * 输入参数  : 无       
+ 169          * 返回参数  : 无
+ 170          *******************************************************************************/
+ 171          ushort PendMessageQueue(void)
+ 172          {    
+ 173   1          ushort message;
+ 174   1          
+ 175   1          while(MessageQueue.Entries == 0)//检测是否存在消息
+ 176   1          {
+ 177   2            //推荐在这儿喂狗
+ 178   2          };          
+C51 COMPILER V9.01   SYSTEM                                                                07/26/2015 23:45:15 PAGE 4   
+
+ 179   1      
+ 180   1          //EnterCritical();              //可以不用临界态，若只有一个地方读取
+ 181   1      
+ 182   1          message = *MessageQueue.Out++;
+ 183   1      
+ 184   1          MessageQueue.Entries--;
+ 185   1          
+ 186   1          if (MessageQueue.Out == MessageQueue.End) 
+ 187   1          {
+ 188   2              MessageQueue.Out = MessageQueue.Start;
+ 189   2          }
+ 190   1      
+ 191   1          //ExitCritical();
+ 192   1          return(message);
+ 193   1      }
+ 194          
+ 195          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    432    ----
+   CONSTANT SIZE    =     86    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       4
+   IDATA SIZE       =     22    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

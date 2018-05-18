@@ -1,0 +1,6 @@
+"STARTUP.obj",
+"Ω” ’.obj",
+"NRF24L01.obj",
+"UART.obj" 
+TO "RRF24L01" 
+RAMSIZE(256) 

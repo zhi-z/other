@@ -1,0 +1,178 @@
+C51 COMPILER V9.01   DEVICE_USART                                                          07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE DEVICE_USART
+OBJECT MODULE PLACED IN .\device_usart.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\device_usart.c BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\device_usart.lst) OBJECT(.\device_usart.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : device_usart.c
+  23          *作用     : 串口设备
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          #include "system.h"
+  29          
+  30          
+  31          /*******************************************************************************
+  32          * 函数名        : putchar
+  33          * 描述      : 被printf函数调用
+  34          * 输入参数  : c,输入字符
+  35          * 返回参数  : 返回true
+  36          ********************************************************************************
+  37          *版本     作者            日期            说明
+  38          *V0.1    Wangsw        2013/09/28       初始版本
+  39          *******************************************************************************/
+  40          char putchar (char c)
+  41          {
+  42   1          if (c == '\n')                  //判断换行符'\n'，若是换行符，需要插入回车符'\r'
+  43   1          {
+  44   2              ES = 0;                 //关闭串口中断
+  45   2              SBUF = '\r';            //发送回车符
+  46   2              while(!TI);                 //因为串口速度较慢，等待发送完成
+  47   2              TI = 0;                 //清除发送标记
+  48   2              ES = 1;                 //发送完毕，开启串口中断，以响应串口接收
+  49   2          }
+  50   1          
+  51   1          ES = 0;                     //关闭串口中断
+  52   1          SBUF = c;                   //发送printf传递过来的字符
+  53   1          while(!TI);
+  54   1          TI = 0;
+C51 COMPILER V9.01   DEVICE_USART                                                          07/26/2015 23:45:15 PAGE 2   
+
+  55   1          ES = 1;
+  56   1          return(true);               //必须要返回true
+  57   1      }
+  58          
+  59          void PutByte(byte byte)
+  60          {
+  61   1          ES = 0;
+  62   1          SBUF = byte;
+  63   1          while(!TI);
+  64   1          TI = 0;
+  65   1          ES = 1;
+  66   1      }
+  67          
+  68          
+  69          /*******************************************************************************
+  70          * 函数名        : PutString
+  71          * 描述      : 发送字节串
+  72          * 输入参数  : sum = 0,按字符串发送，sum > 0 发送sum个数据
+  73          * 返回参数  : 无
+  74          ********************************************************************************
+  75          *版本     作者            日期            说明
+  76          *V0.1    Wangsw        2013/09/28       初始版本
+  77          *******************************************************************************/
+  78          void PutString(string string, byte sum) 
+  79          {
+  80   1          if (sum)                        //判断是否按字符串发送
+  81   1          {
+  82   2              while (sum--)               //按字节流发送
+  83   2              {
+  84   3                  PutByte(*string++);
+  85   3              }
+  86   2          } 
+  87   1          else                            //按字符串发送，直到检测到0x00结束
+  88   1          {
+  89   2              while (*string) 
+  90   2              {
+  91   3                  if (*string == '\n') 
+  92   3                  {
+  93   4                      PutByte('\r');
+  94   4                  }
+  95   3                  PutByte(*string++);
+  96   3              }
+  97   2          }
+  98   1      }
+  99          
+ 100          void InitializeUsart(void)
+ 101          {
+ 102   1      #if 1                           //STC15F2K60S2
+ 103   1              PCON |= 0x80;           //使能波特率倍速位SMOD
+ 104   1              SCON = 0x50;            //8位数据,可变波特率
+ 105   1              AUXR |= 0x40;           //定时器1时钟为Fosc,即1T
+ 106   1              AUXR &= 0xFE;           //串口1选择定时器1为波特率发生器
+ 107   1              TMOD &= 0x0F;           //清除定时器1模式位
+ 108   1              TMOD |= 0x20;           //设定定时器1为8位自动重装方式
+ 109   1              TL1 = 0xF4;             //设定定时初值
+ 110   1              TH1 = 0xF4;             //设定定时器重装值
+ 111   1              ET1 = 0;                //禁止定时器1中断
+ 112   1              TR1 = 1;                //启动定时器1
+ 113   1      #else                                   //STC89C52RC
+                  ES = 0;
+                  TMOD &= 0x0F;
+                  TMOD |= 0x20;
+C51 COMPILER V9.01   DEVICE_USART                                                          07/26/2015 23:45:15 PAGE 3   
+
+                  ET1 = 0;
+                  SetBit(PCON, 7);
+                  /*115200指串口速度，在22118400Hz加速模式下最高速度*/
+                  /*NXP和STC的都支持加速模式,式中的2就是加速模式*/
+                  TH1 = 0x100 - (MainClock / 12 * 2 / 32 / 115200);   
+                  TL1 = TH1;
+                  TR1 = 1;
+                  SCON = 0x50;
+              
+                  RI = 0;
+                      
+                  ES = 1;
+              
+                  /*设置中断优先级*/
+                  PS = 1;
+                  SetBit(IPH, 4);     
+              #endif
+ 134   1      }
+ 135          
+ 136          /*******************************************************************************
+ 137          * 函数名        : UartInterruptHandler
+ 138          * 描述      : 串口中断处理函数
+ 139          * 输入参数  : 无     
+ 140          * 返回参数  : 无
+ 141          *******************************************************************************/
+ 142          static void UartInterruptHandler(void) interrupt 4
+ 143          {
+ 144   1          ES = 0;
+ 145   1          RI = 0;
+ 146   1          //模拟按键消息类型用于软件仿真，实际根据自己的项目而定
+ 147   1          PostMessage(KeyMessageType, SBUF);
+ 148   1          //PostMessage(UsartMessageType, SBUF);
+ 149   1          ES=1;
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    218    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

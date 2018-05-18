@@ -1,0 +1,125 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        07/29/2016  07:43:46  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\软件安装目录\KEIL4安装目录\C51\BIN\BL51.EXE main.obj TO uart RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  D:\软件安装目录\KEIL4安装目录\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  uart (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     001DH     UNIT         ?PR?UART?MAIN
+                    0020H     0003H                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     0016H     UNIT         ?PR?UARTCONFIGURATION?MAIN
+            CODE    003CH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0048H     0005H     UNIT         ?PR?MAIN?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   uart (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?UARTCONFIGURATION?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  uart (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0026H         PUBLIC        UartConfiguration
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/29/2016  07:43:46  PAGE 2
+
+
+  D:00A8H         PUBLIC        IE
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  B:0098H.0       PUBLIC        RI
+  B:0098H.1       PUBLIC        TI
+  C:0003H         PUBLIC        Uart
+  C:0048H         PUBLIC        main
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0048H         LINE#         14
+  C:0048H         LINE#         15
+  C:0048H         LINE#         16
+  C:004BH         LINE#         17
+  C:004BH         LINE#         18
+  C:004BH         LINE#         19
+  -------         ENDPROC       MAIN
+  -------         PROC          UARTCONFIGURATION
+  C:0026H         LINE#         23
+  C:0026H         LINE#         24
+  C:0026H         LINE#         25
+  C:0029H         LINE#         26
+  C:002CH         LINE#         27
+  C:002FH         LINE#         28
+  C:0032H         LINE#         29
+  C:0035H         LINE#         30
+  C:0037H         LINE#         31
+  C:0039H         LINE#         32
+  C:003BH         LINE#         33
+  -------         ENDPROC       UARTCONFIGURATION
+  -------         PROC          UART
+  -------         DO            
+  D:0007H         SYMBOL        date
+  -------         ENDDO         
+  C:0003H         LINE#         35
+  C:000AH         LINE#         39
+  C:000CH         LINE#         40
+  C:000FH         LINE#         41
+  C:000FH         LINE#         42
+  C:0012H         LINE#         43
+  C:0012H         LINE#         44
+  C:0014H         LINE#         45
+  C:0016H         LINE#         46
+  C:0019H         LINE#         47
+  C:001BH         LINE#         49
+  -------         ENDPROC       UART
+  -------         ENDMOD        MAIN
+
+Program Size: data=9.0 xdata=0 code=74
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/29/2016  07:43:46  PAGE 3
+
+
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,166 @@
+C51 COMPILER V9.01   DEVICE_TIMER                                                          07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE DEVICE_TIMER
+OBJECT MODULE PLACED IN .\device_timer.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\device_timer.c BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\device_timer.lst) OBJECT(.\device_timer.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : device_timer.c
+  23          *作用     : 软件定时器设备
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          #include "system.h"
+  29          
+  30          #define TimerSum                0x08     //软件定时器数量
+  31          static byte idata State = 0;    //工作标记寄存器，按位标记，共8路，标记是否就绪
+  32          
+  33          struct Timer                     //Timer类型，包含延时时间和回调函数变量
+  34          {
+  35              ushort  Delay;
+  36              function CallBackFuction;
+  37          };
+  38          static struct Timer idata Block[TimerSum];  //存储延时及回调函数Timer类型数组
+  39          static TimerhandleMode idata Mode;          //工作模式
+  40          
+  41          
+  42          
+  43          
+  44          void TimerSystemTickService(void)
+  45          {
+  46   1          byte i = 0;
+  47   1          byte stateCopy;
+  48   1          
+  49   1          if (State == 0x00) return;      //就绪表为空，跳出
+  50   1      
+  51   1          EnterCritical();
+  52   1        
+  53   1          stateCopy = State;              //复制一份就绪表
+  54   1          while (stateCopy)   
+C51 COMPILER V9.01   DEVICE_TIMER                                                          07/26/2015 23:45:15 PAGE 2   
+
+  55   1          {
+  56   2              if ((stateCopy & 0x01) == 1) 
+  57   2              {
+  58   3                  if ((--Block[i].Delay) == 0) //计数递减到零时
+  59   3                  {
+  60   4                      if (GetBit(Mode, i))     //获取工作模式，决定处理方式
+  61   4                          //抛出消息到大循环中执行
+  62   4                          PostMessage(TimerMessageType, (ushort)(Block[i].CallBackFuction));
+  63   4                      else 
+  64   4                          (*(Block[i].CallBackFuction))(); //直接在系统节拍中处理
+  65   4                          
+  66   4                      ResetBit(State, i);     //计数减到零后，这一路定时器动态退出                 
+  67   4                  }
+  68   3              }
+  69   2              stateCopy = stateCopy >> 1;
+  70   2              i++;
+  71   2          }
+  72   1          ExitCritical();
+  73   1      }
+  74          
+  75          /*****************************************************************************
+  76          * 函数名        : TimerStart
+  77          * 描述      : 软件定时器
+  78          * 输入参数  : handleMode: 两种处理方式，一种直接在节拍中断中处理，适合费用低的,
+  79          *                         另一种在消息中处理，适合处理费用高的。
+  80          *           : delay:延时节拍数，以系统节拍为单位
+  81          *           : callBackFunction: 回调执行函数，延时超时后，执行此函数。
+  82          *             data:消息值，MessageTimer类型为32bit地址,其他类型下都是24bit数据
+  83          * 返回参数  : byte类型，返回ID号，从0开始，若失败则返回invalid(-1)
+  84          *****************************************************************************/
+  85          byte TimerStart(TimerhandleMode handleMode, ushort delay, function callBackFunction)
+  86          {
+  87   1          byte i;
+  88   1              unsigned int j;
+  89   1          EnterCritical();
+  90   1          for(i = 0; i < TimerSum; i++) 
+  91   1          {
+  92   2              if(!GetBit(State, i)) 
+  93   2              {                       
+  94   3                  Block[i].Delay = delay;                                 //延时时间
+  95   3                  Block[i].CallBackFuction = callBackFunction;            //回调函数
+  96   3                  if(handleMode)                                          //工作模式
+  97   3                  {
+  98   4                      SetBit(Mode, i);
+  99   4                                      j = Mode;
+ 100   4                                      printf("Mode = %d\n",j);
+ 101   4                  } 
+ 102   3                  else 
+ 103   3                  {
+ 104   4                      ResetBit(Mode, i);
+ 105   4                                      j = Mode;
+ 106   4                                      printf("Mode = %d\n",j);
+ 107   4                  }
+ 108   3                  SetBit(State, i);                   //置位开启
+ 109   3                  ExitCritical();
+ 110   3                  return(i);
+ 111   3              }
+ 112   2          }
+ 113   1          ExitCritical();
+ 114   1          return(invalid);
+ 115   1      }
+ 116          
+C51 COMPILER V9.01   DEVICE_TIMER                                                          07/26/2015 23:45:15 PAGE 3   
+
+ 117          
+ 118          /*******************************************************************************
+ 119          * 函数名        : TimerStop
+ 120          * 描述      : 关闭某一路定时器
+ 121          * 输入参数  : id TimerStart执行后返回的id，0、1、2...
+ 122          * 返回参数  : 无
+ 123          ********************************************************************************
+ 124          *版本     作者            日期            说明
+ 125          *V0.1    Wangsw        2013/09/25       初始版本
+ 126          *******************************************************************************/
+ 127          void TimerStop(byte id) 
+ 128          {
+ 129   1          if (id >= TimerSum) return;     
+ 130   1              
+ 131   1          EnterCritical();
+ 132   1              
+ 133   1          ResetBit(State, id);            //复位就绪位
+ 134   1              
+ 135   1          ExitCritical();
+ 136   1      }
+ 137          
+ 138          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    345    ----
+   CONSTANT SIZE    =     11    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      12
+   IDATA SIZE       =     42    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

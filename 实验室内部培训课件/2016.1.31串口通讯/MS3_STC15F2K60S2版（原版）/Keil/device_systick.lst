@@ -1,0 +1,94 @@
+C51 COMPILER V9.01   DEVICE_SYSTICK                                                        07/26/2015 23:45:16 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE DEVICE_SYSTICK
+OBJECT MODULE PLACED IN .\device_systick.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\device_systick.c BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\device_systick.lst) OBJECT(.\device_systick.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS-mcu51-v0.1
+   5          *
+   6          *                               实用单片机系统
+   7          *                               McuSystem(MS3.3)
+   8          *                               
+   9          *                              主芯片:STC89C52
+  10          *                           深圳市雨滴科技有限公司
+  11          *
+  12          *                                作者:王绍伟
+  13          *                                网名:凤舞天
+  14          *                                标识:wangsw
+  15          *
+  16          *                                QQ:26033613
+  17          *                               QQ群:291235815
+  18          *                        淘宝店:http://52edk.taobao.com
+  19          *                      论坛:http://gongkong.eefocus.com/bbs/
+  20          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  21          ********************************************************************************
+  22          *文件名   : system_tick.h
+  23          *作用     : 系统节拍
+  24          *创建时间 : 2013.8.17
+  25          ********************************************************************************
+  26          */
+  27          
+  28          #include "system.h"
+  29          
+  30          /*100 指每秒100次，也就是10mS一次*/
+  31          #define TickPerSencond  100        
+  32          /*******************************************************************************
+  33          * 函数名        : InitializeSystemTick
+  34          * 描述      : 初始化系统节拍，节拍周期由TickPerSencond宏定义决定
+  35          * 输入参数  : 无     
+  36          * 返回参数  : 无
+  37          *******************************************************************************/
+  38          void InitializeSystemTick(void)
+  39          {
+  40   1              ushort configure;
+  41   1              configure = 0x10000 - (MainClock/12/TickPerSencond); 
+  42   1              T2H = configure >> 8;;          //设置定时初值
+  43   1              T2L = configure& 0xFF;          //设置定时初值
+  44   1              EA = 1;
+  45   1              IE2 |= 0x04 ;  //打开定时器2中断
+  46   1              AUXR |= 0X10;   //运行定时器2
+  47   1              
+  48   1      }
+  49          
+  50          /*******************************************************************************
+  51          * 函数名        : SystemTickInterruptHandler
+  52          * 描述      : 系统节拍中断入口，节拍周期由TickPerSencond宏定义决定
+  53          * 输入参数  : 无     
+  54          * 返回参数  : 无
+C51 COMPILER V9.01   DEVICE_SYSTICK                                                        07/26/2015 23:45:16 PAGE 2   
+
+  55          *******************************************************************************/
+  56          void SystemTickInterruptHandler(void) interrupt 12 
+  57          {
+  58   1          AUXR &= ~0X10 ;  //关闭定时器2
+  59   1              
+  60   1          KeySystemTickService();             //按键例行服务程序
+  61   1          RtcSystemTickService();             //时钟例行服务程序
+  62   1          TimerSystemTickService();           //软件定时器例行服务程序
+  63   1      
+  64   1          /*例行程序*/
+  65   1      
+  66   1          AUXR |= 0X10 ;    //打开定时器2
+  67   1      }
+  68          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     87    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,4 @@
+"UART.obj",
+"main.obj" 
+TO "UART" 
+RAMSIZE(256) 

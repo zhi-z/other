@@ -1,0 +1,56 @@
+C51 COMPILER V9.01   MAIN                                                                  01/29/2016 16:59:42 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          /*******************************************************************************
+   3          * 文件名 : MAIN.C
+   4          
+   5          * 版本     作者            日期            说明
+   6          * V1.0      NJH        2015/10/11       初始版本
+   7          
+   8          * 描述   : MCU:      晶振:    MHz
+   9                     
+  10          *******************************************************************************/
+  11          
+  12          
+  13           #include<reg52.h>
+  14           #include "uart.h"      
+  15           #include<stdio.h>      
+  16          
+  17           extern unsigned char date;
+  18           extern unsigned char flag;
+  19           
+  20           void main(void)
+  21           {
+  22   1       
+  23   1         UartInit();
+  24   1         while(1)
+  25   1         {
+  26   2      //              UART_Send_Byte(0+48);   //加上48转换成ASCII码
+  27   2      //              UART_Send_Str("abcde\n");
+  28   2                      UART_Put_Num(456) ;      //打印数字。字节输出456
+  29   2                      UART_Put_Num(456) ;
+  30   2                      str_to_u32(123456);
+  31   2         }
+  32   1       
+  33   1       }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     36    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

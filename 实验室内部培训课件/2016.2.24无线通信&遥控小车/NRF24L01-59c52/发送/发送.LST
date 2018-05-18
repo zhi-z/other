@@ -1,0 +1,87 @@
+C51 COMPILER V9.52.0.0   ____                                                              01/28/2016 14:49:20 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE ____
+OBJECT MODULE PLACED IN 发送.OBJ
+COMPILER INVOKED BY: D:\learn\Learning software\keil4\C51\BIN\C51.EXE 发送.c BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "NRF24L01.h"
+   2          #include "uart.h"
+   3          #include <reg52.H>
+   4          
+   5          sbit k1 = P3^4;    //按键发送数据
+   6          sbit k2 = P3^5;
+   7          sbit k3 = P3^6;
+   8          sbit k4 = P3^7;
+   9          
+  10          /*******************************************************************************
+  11          * 功能描述 : 主函数
+  12          * 函数属性 : 
+  13          * 输入参数 : 
+  14          * 返回参数 : 
+  15          * 函数详解 : 
+  16          *******************************************************************************/
+  17          
+  18          void main(void)
+  19          {
+  20   1        //-------------------------------------------------------- 发送数据
+  21   1        //请到头文件中修改数据的宽度，以保证匹配
+  22   1        uchar a[Tx_Data_Width]=  {'0','0','0'}; 
+  23   1        
+  24   1        UartInit();//串口初始化
+  25   1        init_NRF24L01() ;//无线模块初始化
+  26   1        
+  27   1        k1=k2=k3=k4=1;    
+  28   1        
+  29   1        UART_Send_Str("开始发送信息\r\n\r\n\r\n");//串口显示
+  30   1        
+  31   1        while(1)//大循环扫描
+  32   1        { 
+  33   2        
+  34   2          if( NRF24L01_TxPacket(a) )  // Transmit Tx buffer data
+  35   2          {
+  36   3            //判读Tx_DS,如果模块的连接不正常，将没有串口、LED的提示
+  37   3            UART_Send_Str("Send: ………… \n");
+  38   3          }
+  39   2      
+  40   2          if(k1==0)
+  41   2          {
+  42   3            a[0]='1'; 
+  43   3          }
+  44   2          else if(k3==0)
+  45   2          {
+  46   3            a[0]='2'; 
+  47   3          }       
+  48   2          else if(k4==0)
+  49   2          {
+  50   3            a[0]='3'; 
+  51   3          } 
+  52   2          else if(k2==0)
+  53   2          {
+  54   3            a[0]='4'; 
+  55   3          }
+C51 COMPILER V9.52.0.0   ____                                                              01/28/2016 14:49:20 PAGE 2   
+
+  56   2          else
+  57   2          {
+  58   3            a[0]='a';
+  59   3          } 
+  60   2         NRF24L01_TxPacket("as");   
+  61   2        }
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    109    ----
+   CONSTANT SIZE    =     42    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

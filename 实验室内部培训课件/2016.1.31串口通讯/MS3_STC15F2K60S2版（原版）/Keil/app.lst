@@ -1,0 +1,128 @@
+C51 COMPILER V9.01   APP                                                                   07/26/2015 23:45:15 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE APP
+OBJECT MODULE PLACED IN .\app.obj
+COMPILER INVOKED BY: D:\软件安装目录\keil4安装目录\C51\BIN\C51.EXE ..\SourceFile\app.c BROWSE DEBUG OBJECTEXTEND PRINT(.
+                    -\app.lst) OBJECT(.\app.obj)
+
+line level    source
+
+   1          /*
+   2          ********************************************************************************
+   3          *                                嵌入式微系统
+   4          *                               msOS for Mcu51
+   5          *
+   6          *                               主芯片:MCU51
+   7          *                           深圳市雨滴科技有限公司
+   8          *
+   9          *                                作者:王绍伟
+  10          *                                网名:凤舞天
+  11          *                                标识:Wangsw
+  12          *
+  13          *                                QQ:26033613
+  14          *                               QQ群:291235815
+  15          *                        淘宝店:http://52edk.taobao.com
+  16          *                      论坛:http://gongkong.eefocus.com/bbs/
+  17          *                    Google开源:https://code.google.com/p/msos/
+  18          *                博客:http://forum.eet-cn.com/BLOG_wangsw317_1268.HTM
+  19          ********************************************************************************
+  20          *文件名     : app.c
+  21          *作用       : 应用层，系统入口
+  22          *原理       : 无
+  23          ********************************************************************************
+  24          *版本     作者            日期            说明
+  25          *V0.1    Wangsw        2013/09/23       初始版本
+  26          ********************************************************************************
+  27          */
+  28          
+  29          #include "system.h"
+  30          #include "app.h"
+  31          
+  32          
+  33          void Initialize(void)
+  34          {                       
+  35   1          InitializeRtc();
+  36   1          
+  37   1                InitializeUsart();
+  38   1      
+  39   1          InitializeMmi();
+  40   1      
+  41   1          InitializeMessageQueue();
+  42   1      
+  43   1          InitializeSystemTick();
+  44   1      }
+  45          
+  46          
+  47          
+  48          /*******************************************************************************
+  49          * 函数名        : main
+  50          * 描述      : 系统函数入口
+  51          * 输入参数  : 无
+  52          * 返回参数  : 无
+  53          ********************************************************************************
+  54          *版本     作者            日期            说明
+C51 COMPILER V9.01   APP                                                                   07/26/2015 23:45:15 PAGE 2   
+
+  55          *V0.1    Wangsw        2013/09/23       初始版本
+  56          *******************************************************************************/
+  57          unsigned int text = 0 ;
+  58          int main(void)
+  59          {
+  60   1          ushort idata messageData;
+  61   1          byte idata type;
+  62   1          byte idata value;
+  63   1              
+  64   1          Initialize();
+  65   1              
+  66   1              
+  67   1          while(true)
+  68   1          {
+  69   2              messageData = PendMessageQueue();
+  70   2                      
+  71   2              type = GetMessageType(messageData);
+  72   2              value = GetMessageData(messageData);
+  73   2                      
+  74   2                      text = value ;
+  75   2                      printf("%d\n",text);
+  76   2                      
+  77   2              switch(type)                                            
+  78   2              {
+  79   3                  case KeyMessageType:                //状态机与函数指针方式，选一个
+  80   3      #if 0
+                              (*MmiFunction)(value);             //函数指针处理方式
+              #else
+  83   3                      KeyProcess(value);              //状态机处理方式
+  84   3      #endif
+  85   3                      break;
+  86   3      #if 1
+  87   3                  case UsartMessageType:
+  88   3                      UsartProcess(value);
+  89   3                      break;
+  90   3      #endif
+  91   3                  //请填充消息及处理函数
+  92   3                  default:                //软件定时器处理
+  93   3                      Function(messageData);
+  94   3                      break;
+  95   3              }
+  96   2          }
+  97   1      }
+  98          
+  99          
+ 100          
+ 101          
+ 102          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    100    ----
+   CONSTANT SIZE    =      4    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----       4
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
