@@ -6,15 +6,15 @@ Git也用一段时间了，之前主要是把代码上传到GitHub，方便随�
 
 当安装好Git以后，找到在Git文件文件夹下会有一个git-bash.exe程序，先打开git-bash.exe。
 
-![img](C:\Users\JH\Desktop\note\Git\assets/git_cre_1.png)
+![img](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/git_cre_1.png)
 
 打开后git-bash.exe
 
-![img](C:\Users\JH\Desktop\note\Git\assets/git_cre_2.png)
+![img](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/git_cre_2.png)
 
 在电脑上创建一个一个文件夹，这个文件夹用于git进行文件管理，比如我在电脑桌面创建一个文件夹（msOS），然后在git-bash输入cd ~/desktop/msOS进入要管理的文件夹。
 
-![1532686059741](C:\Users\JH\Desktop\note\Git\assets\1532686059741.png)
+![1532686059741](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532686059741.png)
 
 为了方便进行管理，我们在Git中创建用户名(user.name)和用户email（user.email），在米宁行中输入如下命令进行创建：
 
@@ -25,11 +25,11 @@ git config--global user.email "邮箱号码"
 
 管理员身份创建好以后，可以用git config user.name 查看是否创建好。如下图所示。
 
-![1532686738310](C:\Users\JH\Desktop\note\Git\assets\1532686738310.png) 
+![1532686738310](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532686738310.png) 
 
 然后在文件中使用git init命令创建管理文件。创建完成后可以使用命令:ls –a查看生成的文件。
 
-![1532686902530](C:\Users\JH\Desktop\note\Git\assets\1532686902530.png)
+![1532686902530](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532686902530.png)
 
 到这里就完成了版本库的创建，这时候可以把需要管理的项目代码放到该文件中进行管理。
 
@@ -68,7 +68,7 @@ git commit命令，-m后面输入的是本次提交的说明，可以输入任�
 
 在使用git的过程中重点还是要了解文件所在的状态，可以通过转态确认修改是否提交成功。大致分为三个状态，如图所示。
 
-![](C:\Users\JH\Desktop\note\Git\image\git_status.png)
+![](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/git_status.png)
 
 
 
