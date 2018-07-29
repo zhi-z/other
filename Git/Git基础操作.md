@@ -37,7 +37,7 @@ git config--global user.email "邮箱号码"
 
 接着上面的部分，在这里我把msOS代码放到文件中。需要对msOS代码进行管理。把文件放文件夹中以后，通过git status查看当前状态。状态的转换关系后面细讲。
 
-![1532689903590](/home/datah/Desktop/GitHub/other/Git/image/1532689903590.png)
+![1532689903590](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532689903590.png)
 
 出现以上的结果，表明当前处于Untracked状态，没有被加入到版本库。
 
@@ -50,7 +50,7 @@ git config--global user.email "邮箱号码"
 git add .  
 ```
 
-![1532690854145](/home/datah/Desktop/GitHub/other/Git/image/1532690854145.png)
+![1532690854145](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532690854145.png)
 
 这时候的转态为Stage状态。接着进行提交。
 
@@ -64,7 +64,7 @@ git commit命令，-m后面输入的是本次提交的说明，可以输入任�
 
 提交完成之后，通过git status查看状态，可得到如下结果，说明已经完成提交到本地的管理库。
 
-![1532691853981](/home/datah/Desktop/GitHub/other/Git/image/1532691853981.png)
+![1532691853981](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532691853981.png)
 
 ### 3 三个状态
 
@@ -93,20 +93,20 @@ git commit命令，-m后面输入的是本次提交的说明，可以输入任�
 
 第二次提交在代码中进行了修改，如图所示，第一次在这个函数中是空的。
 
-![1532693171153](/home/datah/Desktop/GitHub/other/Git/image/1532693171153.png)
+![1532693171153](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532693171153.png)
 
 第三次提交在该函数中也添加了一句，如图所示。
 
-![1532693469802](/home/datah/Desktop/GitHub/other/Git/image/1532693469802.png)
+![1532693469802](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532693469802.png)
 
 之后通过git log --oneline命令查看有几次被提交了，如图所示
 
-![1532693451599](/home/datah/Desktop/GitHub/other/Git/image/1532693451599.png)
+![1532693451599](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/1532693451599.png)
 
-现在代码中是处于第三次提交的状态，当想回到第一次提交时的版本的时候，如下命令。
+现在代码中是处于第三次提交的状态，通过HEAD->master可以看出，当想回到第一次提交时的版本的时候，如下命令。
 
 ```
-git reset --hard f121198 # 第二次提交的地址
+git reset --hard f121198 # 第二次提交的地址，这里f121198是指第二次提交的地址
 ```
 
 这时候，在代码中又回到了第二次提交时候的版本了，对于其他版本的转换也可以先通过git reflog:查看每一层指针指向的过程，可以查看过去commit版本的id，然后通过以上的命令回到指定的版本。完成版本的转换。
@@ -136,17 +136,17 @@ ssh-keygen -t rsa -C "123456@qq.com"
 
 接着登录GitHub，找到右下角的Settings，然后选中SSH and GPG keys，接着在右上角选中New SSH key的按钮。
 
-![1532695456986](/home/datah/Desktop/GitHub/other/Git/image/assets/1532695456986.png)
+![1532695456986](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532695456986.png)
 
 接着把id_rsa.pub中的内容复制到可以框中，如图所示。
 
-![1532695691006](/home/datah/Desktop/GitHub/other/Git/image/assets/1532695691006.png)
+![1532695691006](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532695691006.png)
 
 #### 5.2 上传
 
 上传之前再GitHub上创建一个仓库，新创建的仓库都会有上传的命令，如图所示，但是只需要输入最后两行命令就可以上传。因为之前我们已经在本地commit过了。
 
-![1532695928023](/home/datah/Desktop/GitHub/other/Git/image/assets/1532695928023.png)
+![1532695928023](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532695928023.png)
 
 ```
 git remote add origin git@github.com:BryanJahangir/msOS.git
@@ -155,11 +155,11 @@ git push -u origin master #对于-u只需要第一次才需要用，以后上传
 
 结果
 
-![1532696519891](/home/datah/Desktop/GitHub/other/Git/image/assets/1532696519891.png)
+![1532696519891](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532696519891.png)
 
 当出现以上的结果，表明上传成功，这时候在GitHub就可以找到了。在GitHub上可以看到我们上传的代码，如图所示。
 
-![1532696652060](/home/datah/Desktop/GitHub/other/Git/image/assets/1532696652060.png)
+![1532696652060](https://raw.githubusercontent.com/zhi-z/other/master/Git/image/assets/1532696652060.png)
 
 
 
@@ -222,5 +222,5 @@ git push -u origin master #对于-u只需要第一次才需要用，以后上传
 
    则执行命令：git remote rm origin
 
-   然后再重新连接要上传的库：git remote add origin git@github.com:zhi-z/AI.git
+   然后再重新连接要上传的库：git remote add origin git@github.comtestz/test.git
 
