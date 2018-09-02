@@ -23,7 +23,7 @@ sudo apt-get install g++-5
 
 安装后查看,如同所示:
 
-![](/home/datah/Desktop/GitHub/other/Visual Studio Code 构建CC++开发环境/image/gcc.png)
+![](https://raw.githubusercontent.com/zhi-z/other/master/ubuntu%20C%2B%2B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image/gcc.png)
 
 ## 2. 写源代码
 
@@ -63,7 +63,7 @@ g++ 文件名 -o 输出文件名
 
 通过以上编译得到*.out文件以后,可以直接把这个文件拖到Terminal上,通过按回车键运行,如图所示:
 
-![](/home/datah/Desktop/GitHub/other/Visual Studio Code 构建CC++开发环境/image/run.png)
+![](https://raw.githubusercontent.com/zhi-z/other/master/ubuntu%20C%2B%2B%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image/run.png)
 
 到这里就完成了ubuntu下c++环境的搭建.
 
